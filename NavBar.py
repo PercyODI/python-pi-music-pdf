@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import Frame
 from Util import PhSize
 
 class NavBar:

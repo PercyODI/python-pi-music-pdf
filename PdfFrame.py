@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import Frame, Canvas, NW, NE
 from PIL import Image, ImageTk
 import fitz
 from Util import PhSize

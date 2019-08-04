@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import Frame
 from tkinter import filedialog
 from Util import *
 from PdfFrame import PdfFrame

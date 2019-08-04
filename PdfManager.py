@@ -1,5 +1,5 @@
 import fitz
-from tkinter import *
+from tkinter import Frame
 from PdfFrame import PdfFrame, PageSide
 from Util import PhSize
 

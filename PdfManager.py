@@ -1,6 +1,7 @@
 import fitz
 from tkinter import *
 from PdfFrame import PdfFrame
+from Util import PhSize
 
 class PdfManager:
     def __init__(self, master: Frame, pdfPath: str):
@@ -19,13 +20,15 @@ class PdfManager:
         self.rightPdfFrame = PdfFrame(self.rightPane)
 
         self.masterFrame = master
-        self.masterFrame.bind("<Configure>", func=self.selfResize)
 
     def NextPage(self):
         pass
 
-    def selfResize(self, event):
-        if(event.widget == self.masterFrame):
-            self.leftPane["width"] = event.width / 2
-            self.leftPane["height"] = event.height
-            print("PdfManager", "Width:", event.width, "Height:", event.height)
+    def resize(self, newSize: PhSize):
+        self.leftPane["width"] = newSize.width / 2
+        self.leftPane["height"] = newSize.height
+
+        self.rightPane["width"] = newSize.width / 2
+        self.rightPane["height"] = newSize.height
+
+        print("PdfManager", "Width:", newSize.width, "Height:", newSize.height)

@@ -3,14 +3,15 @@ from tkinter import filedialog
 from Util import *
 from PdfFrame import PdfFrame
 from PdfManager import PdfManager
+from NavBar import NavBar
 
 class MainWindow:
     def __init__(self, master):
         self.master = master
         self.master.title("Title Takeover!")
         self.master.geometry("500x500")
-        self.height = self.master["height"]
-        self.width = self.master["width"] 
+        self.height = 500
+        self.width = 500
 
         self.pdfPane = Frame(master)
         self.pdfPane.grid(row=0, column=0)
@@ -19,24 +20,27 @@ class MainWindow:
         filePath = self.loadPdfFile()
         self.pdfManager = PdfManager(self.pdfPane, filePath)
 
-        self.bottomNav = Frame(master)
-        self.bottomNav.grid(row=1, column=0)
-        self.bottomNav["bg"] = "black"
-        self.bottomNav["height"] = 40
+        self.bottomNavPane = Frame(master) 
+        self.bottomNavPane.grid(row=1, column=0)
+        self.bottmNavBar = NavBar(self.bottomNavPane)
 
         # Set up master window events
         self.master.bind("<Configure>", func=self.resizeEvent)
+
+        # Force Initial sizing
+        self.resizeAll(self.width, self.height)
+
+    def resizeAll(self, width: int, height: int):
+        self.height = height
+        self.width = width
+        self.pdfManager.resize(PhSize(self.width, self.height - 40))
+        self.bottmNavBar.resize(PhSize(self.width, 40))
+        print("Window", "Width:", self.width, "Height:", self.height)
+
     
     def resizeEvent(self, event):
         if(event.widget is self.master and (self.height != event.height or self.width != event.width)):
-            self.height = event.height
-            self.width = event.width
-            self.pdfPane["height"] = self.height - 40
-            self.pdfPane["width"] = self.width
-
-            self.bottomNav["width"] = self.width
-
-            print("Window", "Width:", self.width, "Height:", self.height)
+            self.resizeAll(event.width, event.height)
     
     def loadPdfFile(self):
         fpath = filedialog.askopenfilename(title="Select your PDF...", filetypes=[("PDFs", "*.pdf")])

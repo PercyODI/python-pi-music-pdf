@@ -1,9 +1,10 @@
 from tkinter import *
 from PIL import Image, ImageTk
 import fitz
-import MainWindow
+from MainWindow import MainWindow
 
 root = Tk()
 
-mainWindow = MainWindow.MainWindow(root)
+mainWindow = MainWindow(root)
+
 root.mainloop()

@@ -1,4 +1,4 @@
-from tkinter import Frame, NSEW
+from tkinter import Frame, NSEW, Menu 
 from tkinter import filedialog
 from Util import *
 from PdfFrame import PdfFrame
@@ -15,6 +15,13 @@ class MainWindow:
 
         self.pdfPane = Frame(master)
         self.pdfPane.grid(row=0, column=0)
+
+        # Set up menu
+        self.menubar = Menu(self.master)
+        self.fileMenu = Menu(self.menubar, tearoff=0)
+        self.fileMenu.add_command(label="Open", command=(lambda x: None)) 
+        self.menubar.add_cascade(label="File", menu=self.fileMenu)
+        self.master.config(menu=self.menubar)
         
         # Set up Pdf Management
         filePath = self.loadPdfFile()

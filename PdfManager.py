@@ -25,6 +25,8 @@ class PdfManager:
         else:
             self.rightPdfFrame = None
 
+    def Remove(self):
+        self.masterFrame.destroy()
 
     def NextPage(self):
         if(self.currentLeftPageNum + 2 < self.doc.pageCount):

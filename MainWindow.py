@@ -1,4 +1,4 @@
-from tkinter import Frame
+from tkinter import Frame, NSEW
 from tkinter import filedialog
 from Util import *
 from PdfFrame import PdfFrame
@@ -20,8 +20,8 @@ class MainWindow:
         filePath = self.loadPdfFile()
         self.pdfManager = PdfManager(self.pdfPane, filePath)
 
-        self.bottomNavPane = Frame(master) 
-        self.bottomNavPane.grid(row=1, column=0)
+        self.bottomNavPane = Frame(self.master) 
+        self.bottomNavPane.grid(row=1, column=0, sticky=NSEW)
         self.bottmNavBar = NavBar(self.bottomNavPane)
 
         # Set up master window events

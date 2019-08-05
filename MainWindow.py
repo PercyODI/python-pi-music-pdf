@@ -13,33 +13,16 @@ class MainWindow:
         self.height = 500
         self.width = 500
 
-        self.pdfPane = Frame(master)
-        self.pdfPane.grid(row=0, column=0)
+        # Set up defaults
+        self.pdfManager = None
+        self.bottomNavBar = None
 
         # Set up menu
         self.menubar = Menu(self.master)
         self.fileMenu = Menu(self.menubar, tearoff=0)
-        self.fileMenu.add_command(label="Open", command=(lambda x: None)) 
+        self.fileMenu.add_command(label="Open", command=self.loadPdfFile) 
         self.menubar.add_cascade(label="File", menu=self.fileMenu)
         self.master.config(menu=self.menubar)
-        
-        # Set up Pdf Management
-        filePath = self.loadPdfFile()
-        self.pdfManager = PdfManager(self.pdfPane, filePath)
-
-        self.bottomNavPane = Frame(self.master) 
-        self.bottomNavPane.grid(row=1, column=0, sticky=NSEW)
-        self.bottomNavBar = NavBar(self.bottomNavPane)
-
-        # Set up master window events
-        self.master.bind("<Configure>", func=self.resizeEvent)
-
-        # Hook up children functions
-        self.bottomNavBar.nextClickFuncs.append(self.pdfManager.NextPage)
-        self.bottomNavBar.previousClickFuncs.append(self.pdfManager.PreviousPage)
-
-        # Force Initial sizing
-        self.resizeAll(self.width, self.height)
 
     def resizeAll(self, width: int, height: int):
         self.height = height
@@ -54,8 +37,36 @@ class MainWindow:
             self.resizeAll(event.width, event.height)
     
     def loadPdfFile(self):
+        if(self.pdfManager is not None):
+            self.pdfManager.Remove()
+            self.pdfManager = None
+        if(self.bottomNavBar is not None):
+            self.bottomNavBar.Remove()
+            self.bottomNavBar = None
+
         fpath = filedialog.askopenfilename(title="Select your PDF...", filetypes=[("PDFs", "*.pdf")])
-        if fpath:
-            return fpath
-        else:
-            raise Exception("Couldn't find given file.")
+
+        def callback():
+            if fpath:
+                pdfPane = Frame(self.master)
+                pdfPane.grid(row=0, column=0)
+                # Set up Pdf Management
+                self.pdfManager = PdfManager(pdfPane, fpath)
+
+                bottomNavPane = Frame(self.master) 
+                bottomNavPane.grid(row=1, column=0, sticky=NSEW)
+                self.bottomNavBar = NavBar(bottomNavPane)
+
+                # Set up master window events
+                self.master.bind("<Configure>", func=self.resizeEvent)
+
+                # Hook up children functions
+                self.bottomNavBar.nextClickFuncs.append(self.pdfManager.NextPage)
+                self.bottomNavBar.previousClickFuncs.append(self.pdfManager.PreviousPage)
+
+                # Force Initial sizing
+                self.resizeAll(self.width, self.height)
+                return fpath
+            else:
+                raise Exception("Couldn't find given file.")
+        self.master.after_idle(callback)

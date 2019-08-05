@@ -45,3 +45,6 @@ class NavBar:
     def previousClicked(self):
         for func in self.previousClickFuncs:
             func()
+
+    def Remove(self):
+        self.masterFrame.destroy()

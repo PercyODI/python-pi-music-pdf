@@ -22,10 +22,14 @@ class MainWindow:
 
         self.bottomNavPane = Frame(self.master) 
         self.bottomNavPane.grid(row=1, column=0, sticky=NSEW)
-        self.bottmNavBar = NavBar(self.bottomNavPane)
+        self.bottomNavBar = NavBar(self.bottomNavPane)
 
         # Set up master window events
         self.master.bind("<Configure>", func=self.resizeEvent)
+
+        # Hook up children functions
+        self.bottomNavBar.nextClickFuncs.append(self.pdfManager.NextPage)
+        self.bottomNavBar.previousClickFuncs.append(self.pdfManager.PreviousPage)
 
         # Force Initial sizing
         self.resizeAll(self.width, self.height)
@@ -34,7 +38,7 @@ class MainWindow:
         self.height = height
         self.width = width
         self.pdfManager.resize(PhSize(self.width, self.height - 40))
-        self.bottmNavBar.resize(PhSize(self.width, 40))
+        self.bottomNavBar.resize(PhSize(self.width, 40))
         print("Window", "Width:", self.width, "Height:", self.height)
 
     

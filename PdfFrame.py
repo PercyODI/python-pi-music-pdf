@@ -34,6 +34,11 @@ class PdfFrame:
             self.canvasPdfId = self.pdfCanvas.create_image(0, 0, anchor=NW, image=self.pdfCanvas.image)
         else:
             self.canvasPdfId = self.pdfCanvas.create_image(self.pdfCanvas["width"], 0, anchor=NE, image=self.pdfCanvas.image)
+
+    def Empty(self):
+        self.pdfCanvas.delete(self.canvasPdfId)
+        self.canvasPdfId = None
+        self.pdfPage = None
     
     def resize(self, newSize: PhSize):
         self.pdfCanvas["width"] = newSize.width

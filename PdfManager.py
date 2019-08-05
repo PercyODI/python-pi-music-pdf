@@ -27,13 +27,26 @@ class PdfManager:
 
 
     def NextPage(self):
-        if(self.currentLeftPageNum + 1 < self.doc.pageCount):
-            self.currentLeftPageNum += 1
+        if(self.currentLeftPageNum + 2 < self.doc.pageCount):
+            self.currentLeftPageNum += 2
             self.leftPdfFrame.DrawPage(self.doc[self.currentLeftPageNum])
         
-        if(self.currentRightPageNum + 1 < self.doc.pageCount):
-            self.currentRightPageNum += 1
-            self.rightPdfFrame.DrawPage(self.doc[self.currentRightPageNum])
+            if(self.currentRightPageNum + 2 < self.doc.pageCount):
+                self.currentRightPageNum += 2
+                self.rightPdfFrame.DrawPage(self.doc[self.currentRightPageNum])
+            else:
+                self.currentRightPageNum += 2
+                self.rightPdfFrame.Empty()
+
+    def PreviousPage(self):
+        if(self.currentLeftPageNum - 2 >= 0):
+            self.currentLeftPageNum -= 2
+            self.leftPdfFrame.DrawPage(self.doc[self.currentLeftPageNum])
+        
+            if(self.currentRightPageNum - 2 >= 0):
+                self.currentRightPageNum -= 2
+                self.rightPdfFrame.DrawPage(self.doc[self.currentRightPageNum])
+
 
     def resize(self, newSize: PhSize):
         self.leftPdfFrame.resize(PhSize(newSize.width / 2, newSize.height))

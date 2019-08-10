@@ -4,7 +4,7 @@ from Util import *
 from PdfFrame import PdfFrame
 from PdfManager import PdfManager
 from NavBar import NavBar
-import PyMus
+from PyMus import PyMusData
 import json
 
 class MainWindow:
@@ -47,8 +47,26 @@ class MainWindow:
         def callback():
             with open(fpath, "r") as pdfFile:
                 pdfFileStr = pdfFile.read()
-                self.pyMusData = PyMus.PyMus.from_json(pdfFileStr)
-                print("Done!")
+                self.pyMusData = PyMusData.from_json(pdfFileStr)
+                
+                pdfPane = Frame(self.master)
+                pdfPane.grid(row=0, column=0)
+                # Set up Pdf Management
+                self.pdfManager = PdfManager(pdfPane, self.pyMusData)
+
+                bottomNavPane = Frame(self.master) 
+                bottomNavPane.grid(row=1, column=0, sticky=NSEW)
+                self.bottomNavBar = NavBar(bottomNavPane)
+
+                # Set up master window events
+                self.master.bind("<Configure>", func=self.resizeEvent)
+
+                # Hook up children functions
+                self.bottomNavBar.nextClickFuncs.append(self.pdfManager.NextPage)
+                self.bottomNavBar.previousClickFuncs.append(self.pdfManager.PreviousPage)
+
+                # Force Initial sizing
+                self.resizeAll(self.width, self.height)
 
         self.master.after_idle(callback)
                 
@@ -78,8 +96,8 @@ class MainWindow:
                 self.master.bind("<Configure>", func=self.resizeEvent)
 
                 # Hook up children functions
-                self.bottomNavBar.nextClickFuncs.append(self.pdfManager.NextPage)
-                self.bottomNavBar.previousClickFuncs.append(self.pdfManager.PreviousPage)
+                # self.bottomNavBar.nextClickFuncs.append(self.pdfManager.NextPage)
+                # self.bottomNavBar.previousClickFuncs.append(self.pdfManager.PreviousPage)
 
                 # Force Initial sizing
                 self.resizeAll(self.width, self.height)

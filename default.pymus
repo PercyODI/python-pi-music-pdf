@@ -25,6 +25,25 @@
                 "pageNum": 1,
                 "annotations": null
             }
+        ],
+        [
+            {
+                "pdfId": "12ec34ee-0050-4c41-8200-7261cdc40144",
+                "pageNum": 2,
+                "annotations": null
+            },
+            {
+                "pdfId": "12ec34ee-0050-4c41-8200-7261cdc40144",
+                "pageNum": 3,
+                "annotations": null
+            }
+        ],
+        [
+            {
+                "pdfId": "12ec34ee-0050-4c41-8200-7261cdc40144",
+                "pageNum": 4,
+                "annotations": null
+            }
         ]
     ]
 }

@@ -9,7 +9,7 @@ class PageSide(Enum):
     RIGHT = auto()
 
 class PdfFrame:
-    def __init__(self, masterFrame: Frame, pageSide: PageSide, pdfPage: fitz.Page):
+    def __init__(self, masterFrame: Frame, pdfPage: fitz.Page, pageSide: PageSide = PageSide.RIGHT):
         self.masterFrame = masterFrame
         self.pdfCanvas = Canvas(self.masterFrame, width=1, height=1)
         self.pdfCanvas.grid(column=0, row=0)

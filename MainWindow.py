@@ -4,6 +4,8 @@ from Util import *
 from PdfFrame import PdfFrame
 from PdfManager import PdfManager
 from NavBar import NavBar
+import PyMus
+import json
 
 class MainWindow:
     def __init__(self, master):
@@ -20,7 +22,9 @@ class MainWindow:
         # Set up menu
         self.menubar = Menu(self.master)
         self.fileMenu = Menu(self.menubar, tearoff=0)
-        self.fileMenu.add_command(label="Open", command=self.loadPdfFile) 
+        self.fileMenu.add_command(label="New", command=self.newFromPdf)
+        self.fileMenu.add_command(label="Open", command=self.openPyMusFile)
+
         self.menubar.add_cascade(label="File", menu=self.fileMenu)
         self.master.config(menu=self.menubar)
 
@@ -36,7 +40,20 @@ class MainWindow:
         if(event.widget is self.master and (self.height != event.height or self.width != event.width)):
             self.resizeAll(event.width, event.height)
     
-    def loadPdfFile(self):
+    def openPyMusFile(self):
+        fpath = filedialog.askopenfilename(title="Select your PyMus File...", filetypes=[("PyMus files", "*.pymus")])
+        if not fpath:
+            raise Exception("Could not find specified file.")
+        def callback():
+            with open(fpath, "r") as pdfFile:
+                pdfFileStr = pdfFile.read()
+                self.pyMusData = PyMus.PyMus.from_json(pdfFileStr)
+                print("Done!")
+
+        self.master.after_idle(callback)
+                
+
+    def newFromPdf(self):
         if(self.pdfManager is not None):
             self.pdfManager.Remove()
             self.pdfManager = None

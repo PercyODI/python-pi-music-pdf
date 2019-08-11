@@ -2,12 +2,7 @@ from tkinter import Frame, Canvas, NW, NE, PhotoImage
 from PIL import Image, ImageTk
 import fitz
 from Util import PhSize
-from enum import Enum, auto
 from typing import Optional
-
-class PageSide(Enum):
-    LEFT = auto()
-    RIGHT = auto()
 
 class PhImageCanvas(Canvas):
     def __init__(self, master, **kw):
@@ -16,37 +11,35 @@ class PhImageCanvas(Canvas):
         return super().__init__(master, **kw)
 
 class PdfFrame:
-    def __init__(self, masterFrame: Frame, pdfPage: fitz.Page, pageSide: PageSide = PageSide.RIGHT) -> None:
+    def __init__(self, masterFrame: Frame, pdfPage: fitz.Page) -> None:
         self.masterFrame = masterFrame
         self.pdfCanvas = PhImageCanvas(self.masterFrame, width=1, height=1)
         self.pdfCanvas.grid(column=0, row=0)
         self.pdfPage = pdfPage
         self.canvasPdfId = None
-        self.pageSide = pageSide
+        self.givenSize: PhSize = PhSize(1, 1)
         self._drawPage()
 
     def _drawPage(self) -> None:
         if(self.canvasPdfId is not None):
             self.pdfCanvas.delete(self.canvasPdfId)
         shrinkFactor = min(
-            int(self.pdfCanvas["height"]) / self.pdfPage.rect.height,
-            int(self.pdfCanvas["width"]) / self.pdfPage.rect.width)
+            float(self.givenSize.height / self.pdfPage.rect.height),
+            float(self.givenSize.width / self.pdfPage.rect.width))
         mat = fitz.Matrix(shrinkFactor, shrinkFactor)
         pix = self.pdfPage.getPixmap(matrix=mat)
 
         mode = "RGBA" if pix.alpha else "RGB"
+        self.pdfCanvas["width"] = pix.width
+        self.pdfCanvas["height"] = pix.height
         self.pdfCanvas.rawImage = Image.frombytes(mode, [pix.width, pix.height], pix.samples)
         self.pdfCanvas.image = ImageTk.PhotoImage(self.pdfCanvas.rawImage)
-        if self.pageSide is PageSide.RIGHT:
-            self.canvasPdfId = self.pdfCanvas.create_image(0, 0, anchor=NW, image=self.pdfCanvas.image)
-        else:
-            self.canvasPdfId = self.pdfCanvas.create_image(self.pdfCanvas["width"], 0, anchor=NE, image=self.pdfCanvas.image)
+        self.canvasPdfId = self.pdfCanvas.create_image(0, 0, anchor=NW, image=self.pdfCanvas.image)
 
     def Remove(self) -> None:
         self.masterFrame.destroy()
     
     def resize(self, newSize: PhSize) -> None:
-        self.pdfCanvas["width"] = max(1, newSize.width)
-        self.pdfCanvas["height"] = max(1, newSize.height)
+        self.givenSize = PhSize(max(1, newSize.width), max(1, newSize.height))
         if(self.pdfPage is not None):
             self._drawPage()

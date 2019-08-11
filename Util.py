@@ -1,6 +1,6 @@
 class PhSize:
-    def __init__(self, width, height) -> None:
-        self.width = width
-        self.height = height
+    def __init__(self, width: int, height: int) -> None:
+        self.width: int = width
+        self.height: int = height
 
     

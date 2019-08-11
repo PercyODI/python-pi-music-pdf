@@ -1,6 +1,6 @@
 import fitz
 from tkinter import Frame
-from PdfFrame import PdfFrame, PageSide
+from PdfFrame import PdfFrame
 from Util import PhSize
 from PyMus import PyMusData, PyMusPage, PyMusPdf
 from uuid import UUID
@@ -34,7 +34,7 @@ class PdfManager:
             pageFrame = Frame(self.masterFrame)
             pageFrame.grid(row=0, column=currCol)
             self.pdfFrames.append(
-                PdfFrame(pageFrame, self.loadedPdfs[page.pdfId][page.pageNum], PageSide.LEFT if currCol == 0 else PageSide.RIGHT))
+                PdfFrame(pageFrame, self.loadedPdfs[page.pdfId][page.pageNum]))
             currCol += 1
         self.resize(
             PhSize(self.masterFrame["width"], self.masterFrame["height"]))
@@ -54,6 +54,6 @@ class PdfManager:
         self.masterFrame["height"] = newSize.height
         for pdfFrame in self.pdfFrames:
             pdfFrame.resize(
-                PhSize(newSize.width / len(self.pdfFrames), newSize.height))
+                PhSize(int(newSize.width / len(self.pdfFrames)), newSize.height))
 
         print("PdfManager", "Width:", newSize.width, "Height:", newSize.height)

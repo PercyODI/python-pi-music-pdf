@@ -1,4 +1,4 @@
-from tkinter import Frame, NSEW, Menu 
+from tkinter import Tk, Frame, NSEW, Menu, S
 from tkinter import filedialog
 from Util import *
 from PdfFrame import PdfFrame
@@ -10,7 +10,7 @@ from typing import Optional
 
 class MainWindow:
     def __init__(self, master) -> None:
-        self.master = master
+        self.master: Tk = master
         self.master.title("Title Takeover!")
         self.master.geometry("500x500")
         self.height = 500
@@ -54,6 +54,7 @@ class MainWindow:
                 
                 pdfPane = Frame(self.master)
                 pdfPane.grid(row=0, column=0)
+                self.master.grid_rowconfigure(0, weight=1)
                 # Set up Pdf Management
                 self.pdfManager = PdfManager(pdfPane, self.pyMusData)
 

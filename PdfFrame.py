@@ -1,24 +1,31 @@
-from tkinter import Frame, Canvas, NW, NE
+from tkinter import Frame, Canvas, NW, NE, PhotoImage
 from PIL import Image, ImageTk
 import fitz
 from Util import PhSize
 from enum import Enum, auto
+from typing import Optional
 
 class PageSide(Enum):
     LEFT = auto()
     RIGHT = auto()
 
+class PhImageCanvas(Canvas):
+    def __init__(self, master, **kw):
+        self.rawImage: Optional[Image] = None
+        self.image: Optional[PhotoImage] = None
+        return super().__init__(master, **kw)
+
 class PdfFrame:
-    def __init__(self, masterFrame: Frame, pdfPage: fitz.Page, pageSide: PageSide = PageSide.RIGHT):
+    def __init__(self, masterFrame: Frame, pdfPage: fitz.Page, pageSide: PageSide = PageSide.RIGHT) -> None:
         self.masterFrame = masterFrame
-        self.pdfCanvas = Canvas(self.masterFrame, width=1, height=1)
+        self.pdfCanvas = PhImageCanvas(self.masterFrame, width=1, height=1)
         self.pdfCanvas.grid(column=0, row=0)
         self.pdfPage = pdfPage
         self.canvasPdfId = None
         self.pageSide = pageSide
         self._drawPage()
 
-    def _drawPage(self):
+    def _drawPage(self) -> None:
         if(self.canvasPdfId is not None):
             self.pdfCanvas.delete(self.canvasPdfId)
         shrinkFactor = min(
@@ -35,15 +42,10 @@ class PdfFrame:
         else:
             self.canvasPdfId = self.pdfCanvas.create_image(self.pdfCanvas["width"], 0, anchor=NE, image=self.pdfCanvas.image)
 
-    def Empty(self):
-        self.pdfCanvas.delete(self.canvasPdfId)
-        self.canvasPdfId = None
-        self.pdfPage = None
-
-    def Remove(self):
+    def Remove(self) -> None:
         self.masterFrame.destroy()
     
-    def resize(self, newSize: PhSize):
+    def resize(self, newSize: PhSize) -> None:
         self.pdfCanvas["width"] = max(1, newSize.width)
         self.pdfCanvas["height"] = max(1, newSize.height)
         if(self.pdfPage is not None):

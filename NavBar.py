@@ -1,11 +1,12 @@
 from tkinter import Frame, Button, E, W, BOTH, NSEW
 from Util import PhSize
+from typing import List, Callable
 from math import floor
 
 class NavBar:
-    def __init__(self, masterFrame: Frame):
-        self.nextClickFuncs = []
-        self.previousClickFuncs = []
+    def __init__(self, masterFrame: Frame) -> None:
+        self.nextClickFuncs: List[Callable] = []
+        self.previousClickFuncs: List[Callable] = []
 
         self.masterFrame = masterFrame
         self.masterFrame["bg"] = "black"
@@ -27,7 +28,7 @@ class NavBar:
         # self.previousButton.grid(row=0, column=0, sticky=NSEW)
 
 
-    def resize(self, newSize: PhSize):
+    def resize(self, newSize: PhSize) -> None:
         self.masterFrame["width"] = newSize.width
         self.masterFrame["height"] = newSize.height
 
@@ -38,13 +39,13 @@ class NavBar:
         self.previousButtonFrame["height"] = newSize.height
         print("NavBar", "Width:", newSize.width, "Height:", newSize.height)
 
-    def nextClicked(self):
+    def nextClicked(self) -> None:
         for func in self.nextClickFuncs:
             func()
 
-    def previousClicked(self):
+    def previousClicked(self) -> None:
         for func in self.previousClickFuncs:
             func()
 
-    def Remove(self):
+    def Remove(self) -> None:
         self.masterFrame.destroy()

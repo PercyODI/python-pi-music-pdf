@@ -6,9 +6,10 @@ from PdfManager import PdfManager
 from NavBar import NavBar
 from PyMus import PyMusData
 import json
+from typing import Optional
 
 class MainWindow:
-    def __init__(self, master):
+    def __init__(self, master) -> None:
         self.master = master
         self.master.title("Title Takeover!")
         self.master.geometry("500x500")
@@ -16,8 +17,8 @@ class MainWindow:
         self.width = 500
 
         # Set up defaults
-        self.pdfManager = None
-        self.bottomNavBar = None
+        self.pdfManager: Optional[PdfManager] = None
+        self.bottomNavBar: Optional[NavBar] = None
 
         # Set up menu
         self.menubar = Menu(self.master)
@@ -28,23 +29,25 @@ class MainWindow:
         self.menubar.add_cascade(label="File", menu=self.fileMenu)
         self.master.config(menu=self.menubar)
 
-    def resizeAll(self, width: int, height: int):
+    def resizeAll(self, width: int, height: int) -> None:
         self.height = height
         self.width = width
-        self.pdfManager.resize(PhSize(self.width, self.height - 40))
-        self.bottomNavBar.resize(PhSize(self.width, 40))
+        if self.pdfManager is not None:
+            self.pdfManager.resize(PhSize(self.width, self.height - 40))
+        if self.bottomNavBar is not None:
+            self.bottomNavBar.resize(PhSize(self.width, 40))
         print("Window", "Width:", self.width, "Height:", self.height)
 
     
-    def resizeEvent(self, event):
+    def resizeEvent(self, event) -> None:
         if(event.widget is self.master and (self.height != event.height or self.width != event.width)):
             self.resizeAll(event.width, event.height)
     
-    def openPyMusFile(self):
+    def openPyMusFile(self) -> None:
         fpath = filedialog.askopenfilename(title="Select your PyMus File...", filetypes=[("PyMus files", "*.pymus")])
         if not fpath:
             raise Exception("Could not find specified file.")
-        def callback():
+        def callback() -> None:
             with open(fpath, "r") as pdfFile:
                 pdfFileStr = pdfFile.read()
                 self.pyMusData = PyMusData.from_json(pdfFileStr)
@@ -71,7 +74,7 @@ class MainWindow:
         self.master.after_idle(callback)
                 
 
-    def newFromPdf(self):
+    def newFromPdf(self) -> None:
         if(self.pdfManager is not None):
             self.pdfManager.Remove()
             self.pdfManager = None
@@ -81,7 +84,7 @@ class MainWindow:
 
         fpath = filedialog.askopenfilename(title="Select your PDF...", filetypes=[("PDFs", "*.pdf")])
 
-        def callback():
+        def callback() -> None:
             if fpath:
                 pdfPane = Frame(self.master)
                 pdfPane.grid(row=0, column=0)
